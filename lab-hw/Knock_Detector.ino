@@ -7,7 +7,7 @@ const int OUTPUT_SPEAKER_PIN = 9;
 const int STOP_BUTTON_PIN = 8;
 
 
-int prevKnockTime = 0;
+unsigned long prevKnockTime = 0;
 bool shouldPlayMusic = false;
 
 int buttonState = 0;
