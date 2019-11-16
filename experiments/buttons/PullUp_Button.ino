@@ -1,0 +1,1 @@
+const int BUTTON_PIN = 2;const int LED_PIN = LED_BUILTIN;int buttonValue = 0, ledValue = 0;void setup() {  pinMode(BUTTON_PIN, INPUT_PULLUP);  pinMode(LED_PIN, OUTPUT);  Serial.begin(9600);}void loop() {  buttonValue = digitalRead(BUTTON_PIN);  Serial.println(buttonValue);  ledValue = !buttonValue;  digitalWrite(LED_PIN, ledValue);}

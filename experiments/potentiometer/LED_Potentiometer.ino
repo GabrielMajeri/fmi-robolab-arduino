@@ -1,0 +1,1 @@
+const int LED_PIN = 9;const int POTEN_PIN = A0;void setup() {  Serial.begin(9600);  pinMode(LED_PIN, OUTPUT);}void loop() {  const int potValue = analogRead(POTEN_PIN);    const int brightness = map(potValue, 0, 1023, 0, 255);  //const int brightness = potValue / 4;    analogWrite(LED_PIN, brightness);    //Serial.println(potValue);  //delay(50);}

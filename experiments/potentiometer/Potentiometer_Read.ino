@@ -1,0 +1,1 @@
+const int POTENTIOMETER_PIN = A0;void setup() {  Serial.begin(9600);}void loop() {  const int potValue = analogRead(POTENTIOMETER_PIN);  const float voltage = potValue * 5.0 / 1023;  Serial.print("Voltage: ");  Serial.print(voltage);  Serial.println(" V");  delay(200);}
