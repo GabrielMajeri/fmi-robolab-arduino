@@ -6,6 +6,8 @@ at the University of Bucharest.
 
 You can find the solved lab exercises in the [homework](lab-hw) directory.
 
+The retro game project is in the [MatrixGame](MatrixGame) directory.
+
 Uncategorized bits of code I've written are in the [experiments](experiments) directory.
 
 ## License
