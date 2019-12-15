@@ -1,33 +1,25 @@
 #pragma once
 
 #include "BitOps.h"
-#include "Matrix.h"
+
+static const byte matrixRows = 8, matrixColumns = 8;
 
 class Map {
  public:
-  using RowT = unsigned long;
+  using RowT = unsigned int;
 
   static const byte height = 32;
-  static const byte width = 32;
+  static const byte width = 16;
 
   Map();
 
-  RowT get(byte row) const { return data[row]; }
-  bool get(byte x, byte y) const { return data[y].test(width - x - 1); }
+  RowT get(byte row) const;
+  bool get(byte x, byte y) const;
 
-  void set(byte x, byte y, bool value) { data[y].set(width - x - 1, value); }
+  void set(byte x, byte y, bool value);
 
-  void createPlatform(int x, int y, int length) {
-    for (int i = 0; i < length; ++i) {
-      set(x + i, y, true);
-    }
-  }
-
-  void createWall(int x, int y, int length) {
-    for (int i = 0; i < length; ++i) {
-      set(x, y + i, true);
-    }
-  }
+  void createPlatform(int x, int y, int length);
+  void createWall(int x, int y, int length);
 
  private:
   Bitfield<RowT> data[height];
@@ -43,38 +35,18 @@ class MapView {
   MapView(Map& map, byte x, byte y) : map(map), xOffset(x), yOffset(y) {}
 
   byte get(byte row) const {
-    byte mapRow = yOffset + (Matrix::rows - 1 - row);
-    byte mapColumn = map.width - (xOffset + Matrix::columns);
+    byte mapRow = yOffset + (matrixRows - 1 - row);
+    byte mapColumn = map.width - (xOffset + matrixColumns);
     return (map.get(mapRow) >> mapColumn) & 0xFF;
   }
 
-  byte getX() const { return xOffset; }
+  byte getX() const;
+  byte getY() const;
 
-  byte getY() const { return yOffset; }
-
-  void moveLeft() {
-    if (xOffset > 0) {
-      --xOffset;
-    }
-  }
-
-  void moveRight() {
-    if (xOffset < map.width - Matrix::columns) {
-      ++xOffset;
-    }
-  }
-
-  void moveUp() {
-    if (yOffset < map.height - Matrix::rows) {
-      ++yOffset;
-    }
-  }
-
-  void moveDown() {
-    if (yOffset > 0) {
-      --yOffset;
-    }
-  }
+  void moveLeft();
+  void moveRight();
+  void moveUp();
+  void moveDown();
 };
 
 extern MapView currentView;

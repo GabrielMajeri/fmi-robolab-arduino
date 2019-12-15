@@ -2,7 +2,6 @@
 #include <LiquidCrystal.h>
 #include "Joystick.h"
 #include "Map.h"
-#include "Matrix.h"
 #include "Melody.h"
 #include "Player.h"
 
@@ -21,10 +20,11 @@ const byte pinLoad = 11;
 const byte numDrivers = 2;
 LedControl lc(pinDin, pinClk, pinLoad, numDrivers);
 
-// Matrix matrix;
 MelodyPlayer melody;
 Map levelMap;
 MapView currentView(levelMap, 0, 0);
+
+GameState currentState;
 
 void setup() {
   Serial.begin(9600);
@@ -46,16 +46,14 @@ void setup() {
   }
 
   levelMap.createPlatform(0, 0, 10);
-  levelMap.createPlatform(10, 1, 8);
-  levelMap.createPlatform(18, 2, 8);
-  levelMap.createPlatform(26, 3, 6);
+  levelMap.createPlatform(10, 1, 5);
 
   levelMap.createWall(0, 0, 20);
 
   levelMap.createPlatform(3, 2, 5);
   levelMap.createPlatform(1, 7, 3);
   levelMap.createPlatform(6, 5, 8);
-  levelMap.createPlatform(2, 31, 28);
+  levelMap.createPlatform(2, 15, 28);
 
   melody.play();
 }
