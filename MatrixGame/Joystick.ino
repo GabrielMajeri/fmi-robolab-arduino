@@ -1,43 +1,30 @@
 #include "Joystick.h"
 
-static const byte PIN_JS_SW = 8;
-static const byte PIN_JS_X = A0;
-static const byte PIN_JS_Y = A1;
+static const byte pinJoystickSwitch = 8;
+static const byte pinJoystickX = A0;
+static const byte pinJoystickY = A1;
 
-static const int AVG_VALUE = 512;
-static const int THRESHOLD = 256;
-
-static const int LEFT_THRESH = AVG_VALUE - THRESHOLD;
-static const int RIGHT_THRESH = AVG_VALUE + THRESHOLD;
-static const int UP_THRESH = AVG_VALUE - THRESHOLD;
-static const int DOWN_THRESH = AVG_VALUE + THRESHOLD;
+static const int averageValue = 512;
+static const int threshold = 256;
 
 Joystick js;
 
-Joystick::Joystick() { pinMode(PIN_JS_SW, INPUT_PULLUP); }
+Joystick::Joystick() { pinMode(pinJoystickSwitch, INPUT_PULLUP); }
 
 void Joystick::read() {
-  buttonState = digitalRead(PIN_JS_SW);
+  buttonState = digitalRead(pinJoystickSwitch);
 
-  xValue = analogRead(PIN_JS_X);
-  yValue = 1024 - analogRead(PIN_JS_Y);
-
-  movedRight = (prevXValue < RIGHT_THRESH) && (xValue >= RIGHT_THRESH);
-  movedLeft = (prevXValue > LEFT_THRESH) && (xValue <= LEFT_THRESH);
-  movedDown = (prevYValue > UP_THRESH) && (yValue <= UP_THRESH);
-  movedUp = (prevYValue < DOWN_THRESH) && (yValue >= DOWN_THRESH);
-
-  prevXValue = xValue;
-  prevYValue = yValue;
+  xValue = analogRead(pinJoystickX);
+  yValue = 1024 - analogRead(pinJoystickY);
 }
 
-bool Joystick::isMoveLeft() const { return movedLeft; }
+bool Joystick::isLeft() const { return xValue <= averageValue - threshold; }
 
-bool Joystick::isMoveRight() const { return movedRight; }
+bool Joystick::isRight() const { return xValue >= averageValue + threshold; }
 
-bool Joystick::isMoveDown() const { return movedDown; }
+bool Joystick::isDown() const { return yValue >= averageValue - threshold; }
 
-bool Joystick::isMoveUp() const { return movedUp; }
+bool Joystick::isUp() const { return yValue >= averageValue + threshold; }
 
 bool Joystick::isPressed() const { return buttonState == LOW; }
 

@@ -2,23 +2,17 @@
 
 class Joystick {
   bool buttonState = HIGH;
-  int xValue = 0, prevXValue = 0;
-  int yValue = 0, prevYValue = 0;
-
-  bool movedLeft = false;
-  bool movedRight = false;
-  bool movedUp = false;
-  bool movedDown = false;
+  int xValue = 0, yValue = 0;
 
  public:
   Joystick();
 
   void read();
 
-  bool isMoveLeft() const;
-  bool isMoveRight() const;
-  bool isMoveDown() const;
-  bool isMoveUp() const;
+  bool isLeft() const;
+  bool isRight() const;
+  bool isDown() const;
+  bool isUp() const;
 
   bool isPressed() const;
 

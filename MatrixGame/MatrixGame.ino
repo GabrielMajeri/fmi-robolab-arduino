@@ -26,8 +26,6 @@ MelodyPlayer melody;
 Map levelMap;
 MapView currentView(levelMap, 0, 0);
 
-using Time = unsigned long;
-
 void setup() {
   Serial.begin(9600);
 
@@ -51,6 +49,9 @@ void setup() {
   levelMap.createPlatform(10, 1, 8);
   levelMap.createPlatform(18, 2, 8);
   levelMap.createPlatform(26, 3, 6);
+
+  levelMap.createWall(0, 0, 20);
+
   levelMap.createPlatform(3, 2, 5);
   levelMap.createPlatform(1, 7, 3);
   levelMap.createPlatform(6, 5, 8);
@@ -61,26 +62,14 @@ void setup() {
 
 void readInput() { js.read(); }
 
-Time lastUpdateTime = 0;
+Time updateTime = 0;
 
 void update() {
+  updateTime = millis();
+
   melody.update();
 
-  if (js.isMoveRight()) {
-    player.moveRight();
-  }
-
-  if (js.isMoveLeft()) {
-    player.moveLeft();
-  }
-
-  if (js.isMoveUp()) {
-    player.moveUp();
-  }
-
-  if (js.isMoveDown()) {
-    player.moveDown();
-  }
+  player.update();
 
   if (player.getRelativeX() > 4) {
     currentView.moveRight();
@@ -99,18 +88,18 @@ void update() {
   }
 }
 
-unsigned long targetTime = 30000;
+Time targetTime = 30000;
 
 void render() {
   lcd.clear();
 
-  lcd.print("Player @ ");
+  lcd.print("P: ");
   lcd.print(player.getX());
   lcd.print(" ");
   lcd.print(player.getY());
 
   lcd.setCursor(0, 1);
-  lcd.print("Map @ ");
+  lcd.print("M: ");
   lcd.print(currentView.getX());
   lcd.print(" ");
   lcd.print(currentView.getY());

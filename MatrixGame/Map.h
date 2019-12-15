@@ -13,12 +13,19 @@ class Map {
   Map();
 
   RowT get(byte row) const { return data[row]; }
+  bool get(byte x, byte y) const { return data[y].test(width - x - 1); }
 
   void set(byte x, byte y, bool value) { data[y].set(width - x - 1, value); }
 
   void createPlatform(int x, int y, int length) {
     for (int i = 0; i < length; ++i) {
       set(x + i, y, true);
+    }
+  }
+
+  void createWall(int x, int y, int length) {
+    for (int i = 0; i < length; ++i) {
+      set(x, y + i, true);
     }
   }
 
