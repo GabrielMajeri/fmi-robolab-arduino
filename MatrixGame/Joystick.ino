@@ -12,6 +12,8 @@ static const int RIGHT_THRESH = AVG_VALUE + THRESHOLD;
 static const int UP_THRESH = AVG_VALUE - THRESHOLD;
 static const int DOWN_THRESH = AVG_VALUE + THRESHOLD;
 
+Joystick js;
+
 Joystick::Joystick() { pinMode(PIN_JS_SW, INPUT_PULLUP); }
 
 void Joystick::read() {
@@ -20,8 +22,8 @@ void Joystick::read() {
   xValue = analogRead(PIN_JS_X);
   yValue = 1024 - analogRead(PIN_JS_Y);
 
-  movedRight = (prevXValue > LEFT_THRESH) && (xValue <= LEFT_THRESH);
-  movedLeft = (prevXValue < RIGHT_THRESH) && (xValue >= RIGHT_THRESH);
+  movedRight = (prevXValue < RIGHT_THRESH) && (xValue >= RIGHT_THRESH);
+  movedLeft = (prevXValue > LEFT_THRESH) && (xValue <= LEFT_THRESH);
   movedDown = (prevYValue > UP_THRESH) && (yValue <= UP_THRESH);
   movedUp = (prevYValue < DOWN_THRESH) && (yValue >= DOWN_THRESH);
 

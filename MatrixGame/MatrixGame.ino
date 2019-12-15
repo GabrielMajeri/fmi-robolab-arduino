@@ -1,6 +1,10 @@
 #include <LedControl.h>
 #include <LiquidCrystal.h>
 #include "Joystick.h"
+#include "Map.h"
+#include "Matrix.h"
+#include "Melody.h"
+#include "Player.h"
 
 const byte pinV0 = 9;
 const byte pinRS = 2;
@@ -11,59 +15,22 @@ const byte pinD6 = 6;
 const byte pinD7 = 7;
 LiquidCrystal lcd(pinRS, pinEnable, pinD4, pinD5, pinD6, pinD7);
 
-const byte pinDin = 12;
-const byte pinClk = 11;
-const byte pinLoad = 10;
-const byte numDrivers = 1;
+const byte pinDin = 13;
+const byte pinClk = 12;
+const byte pinLoad = 11;
+const byte numDrivers = 2;
 LedControl lc(pinDin, pinClk, pinLoad, numDrivers);
 
-Joystick js;
+// Matrix matrix;
+MelodyPlayer melody;
+Map levelMap;
+MapView currentView(levelMap, 0, 0);
 
-unsigned long lastUpdateTime = 0;
-const int updateTimestep = 150;
-
-template <typename I>
-bool testBit(I value, byte position) {
-  return value & (1 << position);
-}
-
-template <typename I>
-I clearBit(I value, byte position) {
-  return value & ~(1 << position);
-}
-
-template <typename I>
-I setBit(I value, byte position) {
-  return value | (1 << position);
-}
-
-class Matrix {
-  // clang-format off
-  byte matrix[8] = {
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b01000010,
-    0b00111100,
-    0b00000000,
-    0b00000000,
-  };
-  // clang-format on
-
- public:
-  byte get(byte row) { return matrix[row]; }
-  bool get(byte row, byte column) { return testBit(matrix[row], column); }
-  void set(byte row, byte column) { matrix[row] = setBit(matrix[row], column); }
-  void set(byte row, byte column, bool value) {
-    matrix[row] =
-        value ? setBit(matrix[row], column) : clearBit(matrix[row], column);
-  }
-};
-
-Matrix matrix;
+using Time = unsigned long;
 
 void setup() {
+  Serial.begin(9600);
+
   lcd.begin(16, 2);
 
   // IDEA: use light sensor for auto brightness
@@ -72,109 +39,109 @@ void setup() {
 
   // the zero refers to the MAX7219 number, it is zero for 1 chip
   for (int index = 0; index < lc.getDeviceCount(); ++index) {
-    lc.shutdown(index, false);  // turn off power saving, enables display
-    lc.setIntensity(index, 1);  // sets brightness (0~15 possible values)
-    lc.clearDisplay(index);     // clear screen
+    // Turn on display
+    lc.shutdown(index, false);
+    // Set brightness
+    lc.setIntensity(index, 1);
+    // Clear display
+    lc.clearDisplay(index);
   }
+
+  levelMap.createPlatform(0, 0, 10);
+  levelMap.createPlatform(10, 1, 8);
+  levelMap.createPlatform(18, 2, 8);
+  levelMap.createPlatform(26, 3, 6);
+  levelMap.createPlatform(3, 2, 5);
+  levelMap.createPlatform(1, 7, 3);
+  levelMap.createPlatform(6, 5, 8);
+  levelMap.createPlatform(2, 31, 28);
+
+  melody.play();
 }
 
 void readInput() { js.read(); }
 
-class Player {
-  byte row, column;
-
-  void setPlayerCell(bool state) { matrix.set(row, column, state); }
-
- public:
-  Player() : row(1), column(2) { setPlayerCell(true); }
-
-  int getRow() const { return row; }
-
-  int getColumn() const { return column; }
-
-  void moveUp() {
-    setPlayerCell(false);
-    row = (row + 8 - 1) % 8;
-    setPlayerCell(true);
-  }
-
-  void moveDown() {
-    setPlayerCell(false);
-    row = (row + 1) % 8;
-    setPlayerCell(true);
-  }
-
-  void moveLeft() {
-    setPlayerCell(false);
-    column = (column + 8 - 1) % 8;
-    setPlayerCell(true);
-  }
-
-  void moveRight() {
-    setPlayerCell(false);
-    column = (column + 1) % 8;
-    setPlayerCell(true);
-  }
-};
-
-Player player;
+Time lastUpdateTime = 0;
 
 void update() {
+  melody.update();
+
+  if (js.isMoveRight()) {
+    player.moveRight();
+  }
+
+  if (js.isMoveLeft()) {
+    player.moveLeft();
+  }
+
   if (js.isMoveUp()) {
     player.moveUp();
-    lastUpdateTime = millis();
   }
 
-  if (js.isMoveDown() &&
-      matrix.get(player.getRow() + 1, player.getColumn()) == false) {
+  if (js.isMoveDown()) {
     player.moveDown();
-    lastUpdateTime = millis();
   }
 
-  if (js.isMoveLeft() &&
-      (player.getColumn() == 0 ||
-       matrix.get(player.getRow(), player.getColumn() - 1) == false)) {
-    player.moveLeft();
-    lastUpdateTime = millis();
+  if (player.getRelativeX() > 4) {
+    currentView.moveRight();
   }
 
-  if (js.isMoveRight() &&
-      (player.getColumn() == 7 ||
-       matrix.get(player.getRow(), player.getColumn() + 1)) == false) {
-    player.moveRight();
-    lastUpdateTime = millis();
+  if (player.getRelativeX() < 3) {
+    currentView.moveLeft();
   }
 
-  if (millis() - lastUpdateTime > updateTimestep) {
-    lastUpdateTime = millis();
+  if (player.getRelativeY() > 4) {
+    currentView.moveUp();
+  }
 
-    if (player.getColumn() == 7 ||
-        matrix.get(player.getRow() + 1, player.getColumn()) != true) {
-      player.moveDown();
-    }
+  if (player.getRelativeY() < 3) {
+    currentView.moveDown();
   }
 }
+
+unsigned long targetTime = 30000;
 
 void render() {
   lcd.clear();
-  lcd.print("hello ");
-  lcd.print(player.getRow());
+
+  lcd.print("Player @ ");
+  lcd.print(player.getX());
   lcd.print(" ");
-  lcd.print(player.getColumn());
+  lcd.print(player.getY());
+
   lcd.setCursor(0, 1);
-  lcd.print("X:");
-  lcd.print(js.getX());
-  lcd.print(" | Y:");
-  lcd.print(js.getY());
+  lcd.print("Map @ ");
+  lcd.print(currentView.getX());
+  lcd.print(" ");
+  lcd.print(currentView.getY());
 
   for (byte row = 0; row < 8; ++row) {
-    lc.setRow(0, row, matrix.get(row));
+    lc.setRow(0, row, currentView.get(row));
   }
+
+  unsigned long currentTime = millis();
+  unsigned long remainingTime = targetTime - currentTime;
+
+  if (remainingTime < 1000) {
+    targetTime = currentTime + 30000;
+  }
+
+  lc.setDigit(1, 0, (remainingTime / 10) % 10, false);
+  lc.setDigit(1, 1, (remainingTime / 100) % 10, false);
+  lc.setDigit(1, 2, (remainingTime / 1000) % 10, true);
+  lc.setDigit(1, 3, (remainingTime / 10000) % 10, false);
 }
 
 void loop() {
+  Time startTime = millis();
+
   readInput();
   update();
   render();
-  delay(5);
+
+  Time currentTime = millis();
+  Time elapsedTime = currentTime - startTime;
+  if (elapsedTime < 15) {
+    delay(15 - elapsedTime);
+  }
 }
