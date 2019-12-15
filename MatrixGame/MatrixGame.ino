@@ -4,6 +4,7 @@
 #include "Map.h"
 #include "Melody.h"
 #include "Player.h"
+#include "State.h"
 
 const byte pinV0 = 9;
 const byte pinRS = 2;
