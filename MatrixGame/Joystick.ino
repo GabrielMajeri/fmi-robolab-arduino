@@ -7,8 +7,6 @@ static const byte pinJoystickY = A1;
 static const int averageValue = 512;
 static const int threshold = 256;
 
-Joystick js;
-
 Joystick::Joystick() { pinMode(pinJoystickSwitch, INPUT_PULLUP); }
 
 void Joystick::read() {

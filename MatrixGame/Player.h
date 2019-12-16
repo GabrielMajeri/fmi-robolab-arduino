@@ -35,6 +35,8 @@ class Player {
   int getRelativeY() const;
 
   void moveTo(byte x, byte y);
+
+  void shiftDown();
 };
 
 extern Player player;

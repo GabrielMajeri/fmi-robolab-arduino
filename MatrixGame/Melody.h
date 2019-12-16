@@ -24,18 +24,20 @@ static const byte noteDurations[] = {
   8, 8, 4,
   8, 8, 8, 8,
   2,
+  /*
   8, 8, 8, 8,
   8, 8, 8, 16, 16,
   8, 8, 8, 8,
   4, 4
+  */
 };
 // clang-format on
 
-static const int noteCount = sizeof(notes) / sizeof(notes[0]);
+static const int noteCount = sizeof(noteDurations) / sizeof(noteDurations[0]);
 
 class MelodyPlayer {
   static const byte pinBuzzer = 10;
-  static const int baseDuration = 1500;
+  static const int baseDuration = 2000;
   bool playing = false;
   int currentNote = 0;
   int lastNoteTime = 0;
@@ -50,7 +52,6 @@ class MelodyPlayer {
 
   void update() {
     if (!playing) {
-      noTone(pinBuzzer);
       return;
     }
 
@@ -67,6 +68,9 @@ class MelodyPlayer {
     if (currentNote == noteCount) {
       playing = false;
       currentNote = 0;
+      noTone(pinBuzzer);
     }
   }
+
+  bool isPlaying() const { return playing; }
 };

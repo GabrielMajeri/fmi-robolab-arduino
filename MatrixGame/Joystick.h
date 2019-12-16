@@ -19,5 +19,3 @@ class Joystick {
   int getX() const;
   int getY() const;
 };
-
-extern Joystick js;
