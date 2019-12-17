@@ -1,53 +1,43 @@
 #pragma once
 
 #include "Pitches.h"
+#include "Time.h"
 
-// Melodies taken from
-// https://www.hackster.io/joshi/piezo-christmas-songs-fd1ae9
-
-// clang-format off
-static const short notes[] = {
-  NOTE_E5, NOTE_E5, NOTE_E5,
-  NOTE_E5, NOTE_E5, NOTE_E5,
-  NOTE_E5, NOTE_G5, NOTE_C5, NOTE_D5,
-  NOTE_E5,
-  NOTE_F5, NOTE_F5, NOTE_F5, NOTE_F5,
-  NOTE_F5, NOTE_E5, NOTE_E5, NOTE_E5, NOTE_E5,
-  NOTE_E5, NOTE_D5, NOTE_D5, NOTE_E5,
-  NOTE_D5, NOTE_G5
+struct Melody {
+  const uint16_t* frequencies;
+  const uint8_t* durations;
+  const int noteCount;
 };
-// clang-format on
 
-// clang-format off
-static const byte noteDurations[] = {
-  8, 8, 4,
-  8, 8, 4,
-  8, 8, 8, 8,
-  2,
-  /*
-  8, 8, 8, 8,
-  8, 8, 8, 16, 16,
-  8, 8, 8, 8,
-  4, 4
-  */
-};
-// clang-format on
-
-static const int noteCount = sizeof(noteDurations) / sizeof(noteDurations[0]);
+extern Melody jingleBellsMelody;
+extern Melody tetrisMelody;
 
 class MelodyPlayer {
+  const uint16_t* frequencies = nullptr;
+  const uint8_t* durations = nullptr;
+  int noteCount = 0;
+
   static const byte pinBuzzer = 10;
-  static const int baseDuration = 2000;
+  static const Time baseDuration = 1800;
   bool playing = false;
   int currentNote = 0;
-  int lastNoteTime = 0;
+  Time nextNoteTime = 0;
 
  public:
+  void setMelody(const Melody& melody) {
+    frequencies = melody.frequencies;
+    durations = melody.durations;
+    noteCount = melody.noteCount;
+  }
+
   void play() {
+    if (noteCount == 0) {
+      return;
+    }
+
     playing = true;
-    lastNoteTime = millis();
-    tone(pinBuzzer, notes[currentNote],
-         baseDuration / noteDurations[currentNote]);
+    currentNote = 0;
+    nextNoteTime = updateTime;
   }
 
   void update() {
@@ -55,22 +45,29 @@ class MelodyPlayer {
       return;
     }
 
-    int currentTime = millis();
+    const uint16_t currentNoteFrequency =
+        pgm_read_word_near(frequencies + currentNote);
+    const Time currentNoteDuration =
+        baseDuration / pgm_read_byte_near(durations + currentNote);
 
-    if (currentTime - lastNoteTime >
-        baseDuration / noteDurations[currentNote]) {
+    if (updateTime > nextNoteTime) {
+      if (currentNoteFrequency == 0) {
+        noTone(pinBuzzer);
+      } else {
+        tone(pinBuzzer, currentNoteFrequency, currentNoteDuration);
+      }
+
+      nextNoteTime = updateTime + currentNoteDuration;
       ++currentNote;
-      tone(pinBuzzer, notes[currentNote],
-           baseDuration / noteDurations[currentNote]);
-      lastNoteTime = currentTime;
     }
 
     if (currentNote == noteCount) {
       playing = false;
-      currentNote = 0;
       noTone(pinBuzzer);
     }
   }
 
   bool isPlaying() const { return playing; }
 };
+
+extern MelodyPlayer melodyPlayer;

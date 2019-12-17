@@ -8,9 +8,15 @@ class PlayingState : public State {
   unsigned score = 0;
 
  public:
-  void onBegin() override {}
+  void onBegin() override {
+    melodyPlayer.setMelody(tetrisMelody);
+    melodyPlayer.play();
+  }
 
   void update() override {
+    melodyPlayer.update();
+    timeDisplay.update();
+
     player.update();
 
     if (player.getRelativeX() > 4) {
@@ -39,5 +45,12 @@ class PlayingState : public State {
     }
   }
 
-  void render() const override { levelMap.render(); }
+  void render() const override {
+    lcd.setCursor(1, 0);
+    lcd.print("Height: ");
+    lcd.print(player.getActualHeight());
+
+    levelMap.render();
+    timeDisplay.render();
+  }
 };

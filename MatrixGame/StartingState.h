@@ -9,7 +9,6 @@ const Time startUpTime = 5000;
 const Time scrollDelayTime = 150;
 
 class StartingState : public State {
-  MelodyPlayer melody;
   Time lastScrollTime;
 
   void generateMap() {
@@ -26,7 +25,8 @@ class StartingState : public State {
 
  public:
   void onBegin() override {
-    melody.play();
+    melodyPlayer.setMelody(jingleBellsMelody);
+    melodyPlayer.play();
 
     generateMap();
 
@@ -36,14 +36,17 @@ class StartingState : public State {
   }
 
   void update() override {
-    melody.update();
+    melodyPlayer.update();
+
+    timeDisplay.increaseTimeLeft(130);
 
     if (updateTime - lastScrollTime >= scrollDelayTime) {
       currentView.moveDown();
       lastScrollTime = updateTime;
     }
 
-    if (currentView.getY() == 0 && !melody.isPlaying()) {
+    if (currentView.getY() == 0 && !melodyPlayer.isPlaying()) {
+      timeDisplay.increaseTimeTo(30000);
       setGameState(GameState::Playing);
     }
   }
@@ -55,5 +58,6 @@ class StartingState : public State {
     lcd.print("the game...");
 
     levelMap.render();
+    timeDisplay.render();
   }
 };
