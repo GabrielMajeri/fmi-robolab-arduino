@@ -27,6 +27,8 @@ bool Player::collidesDown() const { return (y == 0) || levelMap.get(x, y - 1); }
 Player::Player()
     : x(6),
       y(2),
+      actualY(y),
+      maxY(actualY),
       accelY(0),
       state(PlayerState::Walking),
       lastMoveTime(0),
@@ -100,6 +102,11 @@ int Player::getRelativeX() const { return int(x) - currentView.getX(); }
 int Player::getRelativeY() const { return int(y) - currentView.getY(); }
 
 void Player::moveTo(byte newX, byte newY) {
+  actualY += newY - y;
+  if (actualY > maxY) {
+    maxY = actualY;
+  }
+
   setPlayerCell(false);
   x = newX;
   y = newY;

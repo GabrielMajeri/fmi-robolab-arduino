@@ -12,6 +12,7 @@ class Player {
   byte x, y;
   byte accelY;
   PlayerState state;
+  unsigned long actualY, maxY;
 
   Time lastMoveTime;
   Time lastAirTime;
@@ -30,6 +31,8 @@ class Player {
 
   byte getX() const;
   byte getY() const;
+
+  unsigned long getActualHeight() const { return actualY; }
 
   int getRelativeX() const;
   int getRelativeY() const;
