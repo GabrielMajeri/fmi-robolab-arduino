@@ -1,14 +1,12 @@
 #include "State.h"
 
-void setup() {
-  initHardware();
-
-  setGameState(GameState::Starting);
-}
-
-void readInput() { js.read(); }
+const Time frameTimeTarget = 30;
 
 Time updateTime = 0;
+
+void setup() { initHardware(); }
+
+void readInput() { js.read(); }
 
 void update() {
   updateTime = millis();
@@ -23,15 +21,15 @@ void render() {
 }
 
 void loop() {
+  // Game loop based on this article:
+  // https://gameprogrammingpatterns.com/game-loop.html
+
   Time startTime = millis();
 
-  readInput();
-  update();
-  render();
-
-  Time currentTime = millis();
-  Time elapsedTime = currentTime - startTime;
-  if (elapsedTime < 15) {
-    delay(15 - elapsedTime);
+  while (millis() - startTime < frameTimeTarget) {
+    readInput();
+    update();
   }
+
+  render();
 }
