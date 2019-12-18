@@ -20,7 +20,7 @@ bool Joystick::isLeft() const { return xValue <= averageValue - threshold; }
 
 bool Joystick::isRight() const { return xValue >= averageValue + threshold; }
 
-bool Joystick::isDown() const { return yValue >= averageValue - threshold; }
+bool Joystick::isDown() const { return yValue <= averageValue - threshold; }
 
 bool Joystick::isUp() const { return yValue >= averageValue + threshold; }
 
