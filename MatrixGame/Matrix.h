@@ -6,6 +6,7 @@ class Matrix {
 
   void set(byte row, byte rowValue);
 
+  void clear();
   void fill();
 };
 
