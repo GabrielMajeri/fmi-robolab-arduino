@@ -15,8 +15,9 @@ class State {
 
 enum class GameState {
   StartMenu,
-  SettingsMenu,
+  HighScoreMenu,
   AboutMenu,
+  SettingsMenu,
   Starting,
   Playing,
   GameOver,

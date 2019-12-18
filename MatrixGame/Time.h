@@ -4,27 +4,29 @@ using Time = unsigned long;
 
 extern Time updateTime;
 
-bool debounce(bool value, Time& lastTime, Time delay = 500) {
-  if (value && (updateTime - lastTime > delay)) {
-    lastTime = updateTime;
-    return true;
-  }
-
-  return false;
-}
-
-#include "Hardware.h"
+bool debounce(bool value, Time& lastTime, Time delay = 500);
 
 class TimeDisplay {
-  static const byte addr7DigitDisplay = 1;
   Time lastUpdateTime = 0;
   Time timeLeft = 0;
+  bool paused = false;
 
  public:
-  void increaseTimeLeft(Time extraTime) {
-    timeLeft += extraTime;
+  void pause() {
+    paused = true;
     lastUpdateTime = updateTime;
   }
+
+  void unpause() {
+    paused = false;
+    lastUpdateTime = updateTime;
+  }
+
+  bool isFinished() const { return timeLeft == 0; }
+
+  void increaseTimeLeft(Time extraTime);
+
+  void increaseTimeLeftByDifficulty();
 
   void increaseTimeTo(Time totalTime) {
     if (timeLeft < totalTime) {
@@ -34,21 +36,19 @@ class TimeDisplay {
   }
 
   void update() {
-    Time timeDelta = updateTime - lastUpdateTime;
-    lastUpdateTime = updateTime;
-    if (timeLeft > timeDelta) {
-      timeLeft -= timeDelta;
-    } else {
-      timeLeft = 0;
+    if (!paused) {
+      Time timeDelta = updateTime - lastUpdateTime;
+      if (timeLeft > timeDelta) {
+        timeLeft -= timeDelta;
+      } else {
+        timeLeft = 0;
+      }
     }
+
+    lastUpdateTime = updateTime;
   }
 
-  void render() const {
-    lc.setDigit(addr7DigitDisplay, 0, timeLeft / 10 % 10, false);
-    lc.setDigit(addr7DigitDisplay, 1, timeLeft / 100 % 10, false);
-    lc.setDigit(addr7DigitDisplay, 2, timeLeft / 1000 % 10, true);
-    lc.setDigit(addr7DigitDisplay, 3, timeLeft / 10000 % 10, false);
-  }
+  void render() const;
 };
 
 TimeDisplay timeDisplay;

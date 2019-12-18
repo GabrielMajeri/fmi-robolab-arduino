@@ -1,5 +1,6 @@
 #include "State.h"
 
+#include "GameOverState.h"
 #include "PlayingState.h"
 #include "StartMenuState.h"
 #include "StartingState.h"
@@ -18,6 +19,7 @@ class EmptyState : public State {
 StartMenuState startMenuState;
 StartingState startingState;
 PlayingState playingState;
+GameOverState gameOverState;
 
 State* currentState = &emptyState;
 
@@ -37,6 +39,10 @@ void setGameState(GameState newState) {
 
     case GameState::Playing:
       currentState = &playingState;
+      break;
+
+    case GameState::GameOver:
+      currentState = &gameOverState;
       break;
 
     default:

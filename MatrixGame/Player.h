@@ -17,6 +17,9 @@ class Player {
   Time lastMoveTime;
   Time lastAirTime;
 
+  byte lastSafeX, lastSafeY;
+  byte lives;
+
   void setPlayerCell(bool value);
 
   bool collidesLeft() const;
@@ -40,6 +43,12 @@ class Player {
   void moveTo(byte x, byte y);
 
   void shiftDown();
+
+  void setLives(byte newLives) { lives = newLives; }
+  byte getLives() const { return lives; }
+  bool hasNoLivesLeft() const { return lives == 0; }
+
+  void restoreToSafePosition() { moveTo(lastSafeX, lastSafeY); }
 };
 
 extern Player player;

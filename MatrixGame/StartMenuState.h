@@ -4,7 +4,7 @@
 #include "State.h"
 
 class StartMenuState : public State {
-  Modulo<3> selectionIndex = 0;
+  Modulo<4> selectionIndex = 0;
   Time lastPressTime = 0;
 
  public:
@@ -21,12 +21,13 @@ class StartMenuState : public State {
           setGameState(GameState::Starting);
           break;
         case 1:
-          setGameState(GameState::AboutMenu);
+          setGameState(GameState::HighScoreMenu);
           break;
         case 2:
-          setGameState(GameState::SettingsMenu);
+          setGameState(GameState::AboutMenu);
           break;
-        default:
+        case 3:
+          setGameState(GameState::SettingsMenu);
           break;
       }
     }
@@ -46,8 +47,10 @@ class StartMenuState : public State {
       lcd.setCursor(1, 0);
     } else if (selectionIndex == 1) {
       lcd.setCursor(8, 0);
-    } else {
+    } else if (selectionIndex == 2) {
       lcd.setCursor(2, 1);
+    } else {
+      lcd.setCursor(5, 1);
     }
     lcd.print('>');
   }

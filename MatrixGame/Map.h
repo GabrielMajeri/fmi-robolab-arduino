@@ -2,8 +2,6 @@
 
 #include "BitOps.h"
 
-static const byte matrixRows = 8, matrixColumns = 8;
-
 class Map {
  public:
   using RowT = unsigned int;
@@ -16,6 +14,10 @@ class Map {
   RowT get(byte row) const;
   bool get(byte x, byte y) const;
 
+  bool hasGiftAt(byte y) const;
+  byte getGiftX(byte y) const;
+  void collectGift(byte y);
+
   void set(byte x, byte y, bool value);
 
   /// Add a new horizontal platform to the map.
@@ -24,59 +26,20 @@ class Map {
   /// Add a new vertical wall to the map.
   void createWall(int x, int y, int length);
 
-  bool hasSpaceForNewPlatform() const { return prevY < height - 5; }
+  bool hasSpaceForNewPlatform() const;
 
-  void generatePlatform() {
-    byte x, y, length = 3 + random() % 3;
-
-    if (prevX >= width - prevLength - 1) {
-      x = prevX - length - 1 - (random() % 2);
-      y = prevY + 1 + random() % 2;
-    } else if (prevX <= 3) {
-      x = prevX + length + 1;
-      y = prevY + 2;
-    } else {
-      if (random() % 2) {
-        // To the left
-        if (length > prevX) {
-          length = prevX;
-        }
-
-        x = prevX - length + (random() % 2);
-        y = prevY + 2 + random() % 2;
-      } else {
-        // To the right
-        x = prevX + prevLength + random() % 2;
-        y = prevY + 2 + random() % 2;
-
-        if (x + length > width - 1) {
-          x = width - length;
-        }
-      }
-    }
-
-    createPlatform(x, y, length);
-
-    prevX = x;
-    prevY = y;
-    prevLength = length;
-  }
+  void generatePlatform();
 
   /// Returns the Y coordinate of the previously generated platform.
   byte getPrevPlatformY() const { return prevY; }
 
-  void shiftDown() {
-    for (byte i = 0; i < height - 1; ++i) {
-      data[i] = data[i + 1];
-    }
-    data[height - 1].value = 0;
-    --prevY;
-  }
+  void shiftDown();
 
   void render() const;
 
  private:
   Bitfield<RowT> data[height];
+  byte gifts[height];
 
   // Parameters of the previously generated platform
   byte prevX, prevY, prevLength;
@@ -85,17 +48,12 @@ class Map {
 extern Map levelMap;
 
 class MapView {
-  Map& map;
   byte xOffset, yOffset;
 
  public:
-  MapView(Map& map, byte x, byte y) : map(map), xOffset(x), yOffset(y) {}
+  MapView(byte x, byte y);
 
-  byte get(byte row) const {
-    byte mapRow = yOffset + (matrixRows - 1 - row);
-    byte mapColumn = map.width - (xOffset + matrixColumns);
-    return (map.get(mapRow) >> mapColumn) & 0xFF;
-  }
+  byte get(byte row) const;
 
   byte getX() const;
   byte getY() const;

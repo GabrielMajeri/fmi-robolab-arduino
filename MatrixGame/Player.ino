@@ -2,11 +2,12 @@
 
 #include "Joystick.h"
 #include "Map.h"
+#include "Score.h"
 #include "Time.h"
 
-static const Time blinkDelay = 250;
-static const Time moveDelay = 120;
-static const Time airDelay = 100;
+const Time blinkDelay = 500;
+const Time moveDelay = 120;
+const Time airDelay = 100;
 
 Player player;
 
@@ -82,16 +83,29 @@ void Player::update() {
         }
         break;
       default:
+        lastSafeX = x;
+        lastSafeY = y;
         break;
     }
 
     lastAirTime = updateTime;
   }
 
-  if (updateTime % blinkDelay > blinkDelay / 2) {
+  if (updateTime % blinkDelay > blinkDelay / 4) {
     setPlayerCell(true);
   } else {
     setPlayerCell(false);
+  }
+
+  if (y == 0) {
+    --lives;
+  }
+
+  if (levelMap.hasGiftAt(y)) {
+    byte giftX = levelMap.getGiftX(y);
+    if (player.x == giftX) {
+      levelMap.collectGift(y);
+    }
   }
 }
 
@@ -104,6 +118,10 @@ int Player::getRelativeY() const { return int(y) - currentView.getY(); }
 void Player::moveTo(byte newX, byte newY) {
   actualY += newY - y;
   if (actualY > maxY) {
+    for (unsigned i = 0; i < actualY - maxY; ++i) {
+      score.addPointsForHeight();
+    }
+
     maxY = actualY;
   }
 
@@ -113,4 +131,7 @@ void Player::moveTo(byte newX, byte newY) {
   setPlayerCell(true);
 }
 
-void Player::shiftDown() { --y; }
+void Player::shiftDown() {
+  --y;
+  --lastSafeY;
+}

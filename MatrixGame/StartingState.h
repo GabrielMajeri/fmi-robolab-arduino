@@ -11,28 +11,20 @@ const Time scrollDelayTime = 150;
 class StartingState : public State {
   Time lastScrollTime;
 
-  void generateMap() {
-    randomSeed(5);
-
-    byte x = 4, y = 0, length = 5;
-
-    levelMap.createPlatform(x, y, length);
-
-    while (levelMap.hasSpaceForNewPlatform()) {
-      levelMap.generatePlatform();
-    }
-  }
+  void generateInitialMap();
 
  public:
   void onBegin() override {
     melodyPlayer.setMelody(jingleBellsMelody);
     melodyPlayer.play();
 
-    generateMap();
+    generateInitialMap();
 
     currentView.centerOnX();
     currentView.moveToTop();
     lastScrollTime = updateTime;
+
+    timeDisplay.pause();
   }
 
   void update() override {
@@ -45,7 +37,8 @@ class StartingState : public State {
       lastScrollTime = updateTime;
     }
 
-    if (currentView.getY() == 0 && !melodyPlayer.isPlaying()) {
+    if (js.isPressed() ||
+        currentView.getY() == 0 && !melodyPlayer.isPlaying()) {
       timeDisplay.increaseTimeTo(30000);
       setGameState(GameState::Playing);
     }

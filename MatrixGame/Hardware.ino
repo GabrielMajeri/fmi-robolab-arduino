@@ -17,11 +17,17 @@ LedControl lc(pinDin, pinClk, pinLoad, numDrivers);
 
 Joystick js;
 
+static byte heartCustomChar[] = {B00000, B00000, B01010, B11111,
+                                 B11111, B01110, B00100, B00000};
+
 void initHardware() {
   Serial.begin(9600);
 
   // Configure the LCD
   lcd.begin(16, 2);
+
+  // Add the custom character symbols
+  lcd.createChar(heartCharCode, heartCustomChar);
 
   // Set the brightness of the LCD
   pinMode(pinV0, OUTPUT);
