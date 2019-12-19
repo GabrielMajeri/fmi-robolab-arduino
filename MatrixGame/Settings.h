@@ -1,12 +1,22 @@
 #pragma once
 
+const byte playerNameLen = 6;
+char playerName[playerNameLen + 1] = "NONAME";
+
 enum class Difficulty : byte { Easy, Medium, Hard };
+const byte numDifficulties = 3;
 
-class Settings {
- public:
-  char playerName[9] = "NoName";
+Difficulty getCurrentDifficulty();
+const char* getCurrentDifficultyAsString();
 
-  Difficulty difficulty = Difficulty::Easy;
-};
+void increaseDifficulty();
+void decreaseDifficulty();
 
-extern Settings settings;
+byte getMaxPlatformLengthByDifficulty();
+byte getGiftRarityByDifficulty();
+
+byte getStartingLivesByDifficulty();
+Time getStartingTimeByDifficulty();
+Time getExtraTimeByDifficulty();
+
+byte getScoreMultiplierByDifficulty();
