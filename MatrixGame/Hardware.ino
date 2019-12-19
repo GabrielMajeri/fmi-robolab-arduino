@@ -21,6 +21,7 @@ static byte heartCustomChar[] = {B00000, B00000, B01010, B11111,
                                  B11111, B01110, B00100, B00000};
 
 void initHardware() {
+  // Activate serial I/O
   Serial.begin(9600);
 
   // Configure the LCD
