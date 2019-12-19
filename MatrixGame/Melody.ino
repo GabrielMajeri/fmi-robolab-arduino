@@ -96,5 +96,3 @@ static const int tetrisNoteCount =
     sizeof(tetrisDurations) / sizeof(tetrisDurations[0]);
 
 Melody tetrisMelody{tetrisFrequencies, tetrisDurations, tetrisNoteCount};
-
-MelodyPlayer melodyPlayer;
