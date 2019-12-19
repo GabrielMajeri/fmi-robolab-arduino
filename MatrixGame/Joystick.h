@@ -1,8 +1,11 @@
 #pragma once
 
+#include "Time.h"
+
 class Joystick {
-  bool buttonState = HIGH;
+  Time lastCheckTime;
   int xValue = 0, yValue = 0;
+  bool buttonState = HIGH;
 
  public:
   Joystick();
@@ -15,6 +18,13 @@ class Joystick {
   bool isUp() const;
 
   bool isPressed() const;
+
+  bool isLeftDebounced();
+  bool isRightDebounced();
+  bool isDownDebounced();
+  bool isUpDebounced();
+
+  bool isPressedDebounced();
 
   int getX() const;
   int getY() const;
