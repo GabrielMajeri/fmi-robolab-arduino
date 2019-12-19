@@ -2,38 +2,63 @@
 
 #include "Score.h"
 
-const Time deathDelay = 3000;
+const Time deathDelay = 2000;
 
 bool PlayingState::isGameOver() const {
   return player.hasNoLivesLeft() || timeDisplay.isFinished();
 }
 
 void PlayingState::onBegin() {
+  lcd.clear();
+  lcd.setCursor(1, 0);
+  lcd.print("Use JS to move.");
+  lcd.setCursor(0, 1);
+  lcd.print("Press for pause.");
+
   melodyPlayer.setMelody(tetrisMelody);
   melodyPlayer.play();
 
-  switch (settings.difficulty) {
-    case Difficulty::Easy:
-      player.setLives(5);
-      break;
-    case Difficulty::Medium:
-      player.setLives(3);
-      break;
-    case Difficulty::Hard:
-      player.setLives(2);
-      break;
-  }
+  player.moveTo(6, 1);
+  player.setLives(getStartingLivesByDifficulty());
 
   timeDisplay.pause();
 
+  paused = false;
   playerMoved = false;
   playerDied = false;
 }
 
-void PlayingState::update() {
-  melodyPlayer.update();
-  timeDisplay.update();
+void PlayingState::onEnd() {
+  if (timeDisplay.getTimeLeft() > 0) {
+    score.addPointsForTimeLeft(timeDisplay.getTimeLeft() / 1000);
+  }
 
+  if (player.getLives() > 0) {
+    score.addPointsForLivesLeft(player.getLives());
+  }
+
+  if (score.isHighScore()) {
+    score.updateHighScoreList();
+  }
+
+  timeDisplay.clear();
+}
+
+void PlayingState::update() {
+  if (isGameOver()) {
+    setGameState(GameState::GameOver);
+  }
+
+  if (js.isPressedDebounced()) {
+    paused = !paused;
+  }
+
+  if (paused) {
+    return;
+  }
+
+  timeDisplay.update();
+  melodyPlayer.update();
   if (!melodyPlayer.isPlaying()) {
     melodyPlayer.play();
   }
@@ -41,6 +66,7 @@ void PlayingState::update() {
   if (!playerMoved && (js.isLeft() || js.isRight() || js.isUp())) {
     playerMoved = true;
     timeDisplay.unpause();
+    lcd.clear();
   }
 
   if (!playerDied) {
@@ -50,6 +76,9 @@ void PlayingState::update() {
       playerDied = true;
       timeDisplay.pause();
       dieTime = updateTime;
+
+      lcd.clear();
+      lcd.print("You lost a life!");
     }
   } else {
     if (updateTime - dieTime > deathDelay) {
@@ -80,29 +109,27 @@ void PlayingState::update() {
     levelMap.shiftDown();
   }
 
-  if (isGameOver()) {
-    setGameState(GameState::GameOver);
-  }
-
   if (levelMap.hasSpaceForNewPlatform()) {
     levelMap.generatePlatform();
   }
 }
 
 void PlayingState::render() const {
-  if (!playerMoved) {
-    lcd.setCursor(1, 0);
-    lcd.print("Use JS to move.");
-    lcd.setCursor(0, 1);
-    lcd.print("Press for pause.");
-  } else {
+  if (paused) {
+    lcd.clear();
+    lcd.setCursor(2, 0);
+    lcd.print("Game paused");
+    lcd.setCursor(3, 1);
+    lcd.print("Press JS");
+    return;
+  }
+
+  if (playerMoved) {
     if (!playerDied) {
+      lcd.clear();
       lcd.setCursor(1, 0);
       lcd.print("Height: ");
       lcd.print(player.getActualHeight());
-    } else {
-      lcd.setCursor(0, 0);
-      lcd.print("You lost a life!");
     }
 
     lcd.setCursor(0, 1);
