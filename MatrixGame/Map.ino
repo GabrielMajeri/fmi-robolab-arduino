@@ -3,6 +3,7 @@
 #include "Hardware.h"
 #include "Matrix.h"
 #include "Score.h"
+#include "Settings.h"
 #include "Time.h"
 
 const Time giftBlinkDelay = 60;
@@ -48,7 +49,7 @@ void Map::createWall(int x, int y, int length) {
 bool Map::hasSpaceForNewPlatform() const { return prevY < height - 5; }
 
 void Map::generatePlatform() {
-  byte x, y, length = 3 + random() % 3;
+  byte x, y, length = 2 + random() % getMaxPlatformLengthByDifficulty();
 
   if (prevX >= width - prevLength - 1) {
     x = prevX - length - 1 - (random() % 2);
@@ -77,8 +78,7 @@ void Map::generatePlatform() {
   }
 
   // Add gifts randomly on some platforms
-  // TODO: make gifts rarer on harder difficulties
-  if (random() % 2) {
+  if (random() % getGiftRarityByDifficulty() == 0) {
     gifts[y + 1] = x + length / 2;
   }
 
