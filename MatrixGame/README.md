@@ -49,3 +49,48 @@ This section describes how this game satisfies the project's requirements.
 - **Multiple levels**: When the player finishes a level they unlock the next level which is harder.
   Each level is stored **in flash memory** as a 64x32 bit array (256 bytes).
   The locations of the presents are stored in arrays as x,y-coordinate pairs.
+
+## Implementation
+
+This section contains the tehnical details of the final project.
+
+### File Hierarchy
+
+What follows is an overview of the files and classes used to program the game.
+
+- [MatrixGame.ino](MatrixGame.ino) contains the `setup()` and `loop()` entry points.
+
+- Game [states](State.h):
+
+  - [Intro screen](IntroState.h)
+  - Menus:
+    - [Start Menu](StartMenuState.h)
+    - [About Menu](AboutMenuState.h)
+    - [High Scores Menu](HighScoreMenuState.h)
+    - [Settings Menu](SettingsMenuState.h)
+  - [Playing state](PlayingState.h)
+  - [Game over screen](GameOverState.h)
+
+- [Hardware](Hardware.h)
+
+  - [Joystick](Joystick.h)
+  - [8x8 Matrix](Matrix.h)
+  - Time left, shown on a [7-segment display](TimeDisplay.h)
+
+- Music system
+
+  - Note [pitches](Pitches.h)
+  - [Melodies](Melody.h)
+  - [Melody player](MelodyPlayer.h)
+
+- Game world
+
+  - [Player](Player.h)
+  - [Map](Map.h)
+  - [Score](Score.h)
+
+- [Persistent data](Persistent.h), saved to the EEPROM
+
+- All the configurable [settings](Settings.h)
+
+- [Time](Time.h)-related and [utility](Utility.h) functions
