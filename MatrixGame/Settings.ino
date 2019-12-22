@@ -3,21 +3,6 @@
 #include "Persistent.h"
 #include "Time.h"
 
-// On harder difficulties, every score point is multiplied by a factor.
-const int easyPointMultiplier = 1;
-const int mediumPointMultiplier = 2;
-const int hardPointMultiplier = 3;
-
-const Time startingTimeEasy = 25000;
-const Time startingTimeMedium = 20000;
-const Time startingTimeHard = 15000;
-
-// On easier difficulties, each gift gives less extra time,
-// but they are more common.
-const Time extraTimeEasy = 1500;
-const Time extraTimeMedium = 2500;
-const Time extraTimeHard = 3000;
-
 Difficulty getCurrentDifficulty() { return persistentData.difficulty; }
 
 void setCurrentDifficulty(Difficulty diff) { persistentData.difficulty = diff; }
@@ -61,9 +46,9 @@ byte getGiftRarityByDifficulty() {
     case Difficulty::Easy:
       return 2;
     case Difficulty::Medium:
-      return 3;
-    case Difficulty::Hard:
       return 4;
+    case Difficulty::Hard:
+      return 6;
   }
 }
 
@@ -81,32 +66,35 @@ byte getStartingLivesByDifficulty() {
 Time getStartingTimeByDifficulty() {
   switch (getCurrentDifficulty()) {
     case Difficulty::Easy:
-      return startingTimeEasy;
+      return 25000;
     case Difficulty::Medium:
-      return startingTimeMedium;
+      return 20000;
     case Difficulty::Hard:
-      return startingTimeHard;
+      return 15000;
   }
 }
 
 Time getExtraTimeByDifficulty() {
+  // On easier difficulties, each gift gives less extra time,
+  // but they are more common.
   switch (getCurrentDifficulty()) {
     case Difficulty::Easy:
-      return extraTimeEasy;
+      return 1000;
     case Difficulty::Medium:
-      return extraTimeMedium;
+      return 1500;
     case Difficulty::Hard:
-      return extraTimeHard;
+      return 2000;
   }
 }
 
 byte getScoreMultiplierByDifficulty() {
+  // On harder difficulties, every score point is multiplied by a factor.
   switch (getCurrentDifficulty()) {
     case Difficulty::Easy:
-      return easyPointMultiplier;
+      return 1;
     case Difficulty::Medium:
-      return mediumPointMultiplier;
+      return 2;
     case Difficulty::Hard:
-      return hardPointMultiplier;
+      return 3;
   }
 }
