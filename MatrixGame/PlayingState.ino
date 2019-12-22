@@ -1,6 +1,9 @@
 #include "PlayingState.h"
 
+#include "Map.h"
+#include "Player.h"
 #include "Score.h"
+#include "TimeDisplay.h"
 
 const Time deathDelay = 2000;
 

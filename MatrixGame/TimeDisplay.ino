@@ -5,6 +5,8 @@
 
 const byte addr7DigitDisplay = 1;
 
+TimeDisplay timeDisplay;
+
 void TimeDisplay::pause() {
   paused = true;
   lastUpdateTime = updateTime;

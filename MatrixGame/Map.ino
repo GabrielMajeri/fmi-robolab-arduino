@@ -4,7 +4,7 @@
 #include "Matrix.h"
 #include "Score.h"
 #include "Settings.h"
-#include "Time.h"
+#include "TimeDisplay.h"
 
 const Time giftBlinkDelay = 60;
 
@@ -49,7 +49,7 @@ void Map::createWall(int x, int y, int length) {
 bool Map::hasSpaceForNewPlatform() const { return prevY < height - 5; }
 
 void Map::generatePlatform() {
-  byte x, y, length = 2 + random() % getMaxPlatformLengthByDifficulty();
+  byte x, y, length = 2 + random() % (long)getMaxPlatformLengthByDifficulty();
 
   if (prevX >= width - prevLength - 1) {
     x = prevX - length - 1 - (random() % 2);
