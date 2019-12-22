@@ -4,6 +4,8 @@
 
 "Santa's Workshop" is a 2D scrolling platformer, inspired by classic games such as Mario. The player is represented by a dot which is able to move and jump around the map. The map is made out of horizontal platforms.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/GFQkmgMiz-4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ## Story
 
 While working hard to make presents for Christmas, the elves were careless and misplaced some toys in the workshop.
