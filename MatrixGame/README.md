@@ -2,7 +2,7 @@
 
 ## Summary
 
-"Santa's Workshop" is a 2D scrolling platformer, inspired by classic games such as Mario. The player is represented by a dot which is able to move and jump around the map. The map is made out of horizontal platforms.
+"Santa's Workshop" is a 2D platformer, inspired by games such as Doodle Jump and Mario. The player is represented by a dot which is able to move and jump around the map. The map is made out of horizontal platforms.
 
 [Click here for a video presentation of the game](https://www.youtube.com/watch?v=GFQkmgMiz-4)
 
@@ -11,9 +11,9 @@
 ## Story
 
 While working hard to make presents for Christmas, the elves were careless and misplaced some toys in the workshop.
-Your objective is to jump around and collect all the presents before Santa has to depart to deliver the presents.
+Your objective is to jump around and collect all the presents before Santa has to depart to deliver them.
 
-Each level is a different room of Santa's Workshop, each more intricate than the previous one. And because Christmas is fast approaching, you will start with less time in later levels.
+Santa's workshop is infinitely tall. And because Christmas is fast approaching, you have limited time.
 
 ## How To Play
 
@@ -80,9 +80,17 @@ This section contains the tehnical details of the final project.
 
 ### Hardware
 
-![Breadboards and Arduino](images/boards.jpg)
-![Cables behind display and joystick](images/displays.jpg)
+#### Front face
+
 ![User-visible part of the project](images/front.jpg)
+
+#### The back of the front face
+
+![Cables behind display and joystick](images/displays.jpg)
+
+#### Breadboards with the Arduino, inside the case
+
+![Breadboards and Arduino](images/boards.jpg)
 
 ### File Hierarchy
 
