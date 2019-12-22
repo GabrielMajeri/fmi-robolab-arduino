@@ -2,7 +2,7 @@
 
 #include "Settings.h"
 
-const byte maxHighScores = 3;
+const byte maxHighScores = 7;
 
 /// A high scored achieved by a player.
 struct SavedScore {

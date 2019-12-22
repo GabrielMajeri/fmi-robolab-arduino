@@ -25,16 +25,17 @@ bool Player::collidesUp() const {
 
 bool Player::collidesDown() const { return (y == 0) || levelMap.get(x, y - 1); }
 
-Player::Player()
-    : x(6),
-      y(2),
-      actualY(y),
-      maxY(actualY),
-      accelY(0),
-      state(PlayerState::Walking),
-      lastMoveTime(0),
-      lastAirTime(0) {
+void Player::reset() {
   setPlayerCell(true);
+  x = 6;
+  y = 2;
+
+  actualY = y;
+  maxY = actualY;
+  accelY = 0;
+  state = PlayerState::Walking;
+  lastMoveTime = 0;
+  lastAirTime = 0;
 }
 
 void Player::update() {

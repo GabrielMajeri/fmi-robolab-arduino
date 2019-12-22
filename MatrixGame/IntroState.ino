@@ -12,6 +12,8 @@ void IntroState::onBegin() {
 }
 
 void IntroState::update() {
+  // Enter the start menu after a fixed amount of time,
+  // and allow the player to skip the intro sequence
   if (debounce(startTime, introDuration) || js.isPressedDebounced()) {
     setGameState(GameState::StartMenu);
   }

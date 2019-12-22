@@ -9,11 +9,12 @@ class State {
   virtual void onBegin() {}
   virtual void onEnd() {}
 
-  virtual void update() = 0;
-  virtual void render() const = 0;
+  virtual void update() {}
+  virtual void render() const {}
 };
 
 enum class GameState {
+  Intro,
   StartMenu,
   HighScoreMenu,
   AboutMenu,

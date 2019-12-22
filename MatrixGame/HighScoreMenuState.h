@@ -3,45 +3,18 @@
 #include "Persistent.h"
 #include "State.h"
 
+/// Menu screen on which the top highest scores are listed.
 class HighScoreMenuState : public State {
   byte topScoreIndex;
 
-  void printScore(byte index) {
-    const SavedScore& score = persistentData.topPlayers[index];
-    char name[8] = {};
-    strncpy(name, score.name, playerNameLen);
+  /// Prints a score on the current LCD line.
+  void printScore(byte index);
 
-    lcd.print(index + 1);
-    lcd.print(". ");
-    lcd.print(name);
-    lcd.print(" ");
-    lcd.print(score.score);
-  }
-
-  void printScores() {
-    lcd.clear();
-    printScore(topScoreIndex);
-
-    if (topScoreIndex + 1 < maxHighScores) {
-      lcd.setCursor(0, 1);
-      printScore(topScoreIndex + 1);
-    }
-  }
+  /// Prints the currently visible scores on the LCD.
+  void printScores();
 
  public:
-  void onBegin() override { printScores(); }
+  void onBegin() override;
 
-  void update() override {
-    if (js.isDownDebounced()) {
-      topScoreIndex = (topScoreIndex + 1) % maxHighScores;
-      printScores();
-    }
-    if (js.isUpDebounced()) {
-      topScoreIndex = (topScoreIndex + maxHighScores - 1) % maxHighScores;
-      printScores();
-    }
-    if (js.isPressedDebounced()) {
-      setGameState(GameState::StartMenu);
-    }
-  }
+  void update() override;
 };

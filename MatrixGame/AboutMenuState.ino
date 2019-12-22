@@ -1,10 +1,12 @@
 #include "AboutMenuState.h"
 
+#include "Matrix.h"
+
 const char* const infoLines[] = {"Santa's Workshop",
                                  "Created by Gabriel Majeri",
                                  "Thanks to my teachers and colleagues",
                                  "Project for @UnibucRobotics",
-                                 "GitHub: https://shorturl.at/cefm4",
+                                 "GitHub: shorturl.at/cefm4",
                                  "Press JS to go to start menu",
                                  "Scroll down to go back up"};
 
@@ -48,7 +50,12 @@ void AboutMenuState::printCurrentLines() {
   }
 }
 
-void AboutMenuState::onBegin() { scrollToLine(0); }
+void AboutMenuState::onBegin() {
+  scrollToLine(0);
+  matrix.fill();
+}
+
+void AboutMenuState::onEnd() { matrix.clear(); }
 
 void AboutMenuState::update() {
   if (maxScroll > 0 && debounce(lastScrollTime, scrollDelay)) {
@@ -79,5 +86,3 @@ void AboutMenuState::update() {
     setGameState(GameState::StartMenu);
   }
 }
-
-void AboutMenuState::render() const {}

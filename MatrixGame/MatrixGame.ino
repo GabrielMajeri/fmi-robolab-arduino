@@ -1,23 +1,19 @@
 #include "State.h"
 
+#include "Persistent.h"
+
 const Time frameTimeTarget = 30;
 
 Time updateTime = 0;
 
-void setup() { initHardware(); }
+void setup() {
+  initHardware();
+  getGameState().onBegin();
 
-void readInput() { js.read(); }
+  // Uncomment to reset all highscores:
+  // resetPersistentData();
 
-void update() {
-  updateTime = millis();
-
-  getGameState().update();
-}
-
-void render() {
-  lcd.clear();
-
-  getGameState().render();
+  loadPersistentData();
 }
 
 void loop() {
@@ -26,10 +22,13 @@ void loop() {
 
   Time startTime = millis();
 
-  while (millis() - startTime < frameTimeTarget) {
-    readInput();
-    update();
-  }
+  do {
+    js.read();
 
-  render();
+    updateTime = millis();
+
+    getGameState().update();
+  } while (millis() - startTime < frameTimeTarget);
+
+  getGameState().render();
 }

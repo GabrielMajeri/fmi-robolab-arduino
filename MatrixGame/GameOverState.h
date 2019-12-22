@@ -4,6 +4,7 @@
 #include "Score.h"
 #include "State.h"
 
+/// Screen displayed once the player finishes the game (i.e. dies).
 class GameOverState : public State {
   Time lastTime;
   bool printingScore, printingHighScore;

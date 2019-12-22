@@ -16,9 +16,11 @@ const Time startingTimeHard = 15000;
 // but they are more common.
 const Time extraTimeEasy = 1500;
 const Time extraTimeMedium = 2500;
-const Time extraTimeHard = 4000;
+const Time extraTimeHard = 3000;
 
 Difficulty getCurrentDifficulty() { return persistentData.difficulty; }
+
+void setCurrentDifficulty(Difficulty diff) { persistentData.difficulty = diff; }
 
 const char* getCurrentDifficultyAsString() {
   switch (getCurrentDifficulty()) {

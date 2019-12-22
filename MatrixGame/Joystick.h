@@ -2,12 +2,14 @@
 
 #include "Time.h"
 
+/// Support class for joystick input.
 class Joystick {
   Time lastCheckTime;
   int xValue = 0, yValue = 0;
   bool buttonState = HIGH;
 
  public:
+  /// Initializes the JS hardware
   Joystick();
 
   void read();

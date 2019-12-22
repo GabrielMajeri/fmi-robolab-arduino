@@ -7,6 +7,8 @@ enum class Difficulty : byte { Easy, Medium, Hard };
 const byte numDifficulties = 3;
 
 Difficulty getCurrentDifficulty();
+void setCurrentDifficulty(Difficulty diff);
+
 const char* getCurrentDifficultyAsString();
 
 void increaseDifficulty();

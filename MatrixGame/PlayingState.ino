@@ -9,6 +9,8 @@ bool PlayingState::isGameOver() const {
 }
 
 void PlayingState::onBegin() {
+  savedDifficulty = getCurrentDifficulty();
+
   lcd.clear();
   lcd.setCursor(1, 0);
   lcd.print("Use JS to move.");
@@ -29,6 +31,8 @@ void PlayingState::onBegin() {
 }
 
 void PlayingState::onEnd() {
+  melodyPlayer.stop();
+
   if (timeDisplay.getTimeLeft() > 0) {
     score.addPointsForTimeLeft(timeDisplay.getTimeLeft() / 1000);
   }
@@ -42,6 +46,9 @@ void PlayingState::onEnd() {
   }
 
   timeDisplay.clear();
+
+  setCurrentDifficulty(savedDifficulty);
+  player.reset();
 }
 
 void PlayingState::update() {
@@ -109,6 +116,14 @@ void PlayingState::update() {
     levelMap.shiftDown();
   }
 
+  if (getCurrentDifficulty() != Difficulty::Hard &&
+      player.getActualHeight() > 50) {
+    setCurrentDifficulty(Difficulty::Medium);
+  }
+  if (player.getActualHeight() > 100) {
+    setCurrentDifficulty(Difficulty::Hard);
+  }
+
   if (levelMap.hasSpaceForNewPlatform()) {
     levelMap.generatePlatform();
   }
@@ -130,6 +145,8 @@ void PlayingState::render() const {
       lcd.setCursor(1, 0);
       lcd.print("Height: ");
       lcd.print(player.getActualHeight());
+      lcd.setCursor(15, 0);
+      lcd.print(getCurrentDifficultyAsString()[0]);
     }
 
     lcd.setCursor(0, 1);

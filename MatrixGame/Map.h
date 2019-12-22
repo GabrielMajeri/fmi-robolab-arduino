@@ -2,6 +2,10 @@
 
 #include "BitOps.h"
 
+/// Object storing the currently generated game map.
+///
+/// As part of the map gets shifted down, new platforms
+/// can be generated at the top.
 class Map {
  public:
   using RowT = unsigned int;
@@ -47,6 +51,7 @@ class Map {
 
 extern Map levelMap;
 
+/// View which remembers which part of the map is currently visible.
 class MapView {
   byte xOffset, yOffset;
 

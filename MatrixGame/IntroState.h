@@ -2,6 +2,7 @@
 
 #include "State.h"
 
+/// Intro screen displaying the game's name.
 class IntroState : public State {
   Time startTime;
 

@@ -8,6 +8,7 @@ enum class PlayerState : byte {
   Falling,
 };
 
+/// Class which controls all the player-related state, and the player's dot.
 class Player {
   byte x, y;
   byte accelY;
@@ -28,7 +29,7 @@ class Player {
   bool collidesDown() const;
 
  public:
-  Player();
+  void reset();
 
   void update();
 

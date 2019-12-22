@@ -1,36 +1,49 @@
 #include "State.h"
 
+#include "AboutMenuState.h"
 #include "GameOverState.h"
+#include "HighScoreMenuState.h"
+#include "IntroState.h"
 #include "PlayingState.h"
+#include "SettingsMenuState.h"
 #include "StartMenuState.h"
 #include "StartingState.h"
 
-class EmptyState : public State {
- public:
-  void update() {}
-  void render() const {
-    lcd.setCursor(2, 0);
-    lcd.print("Unreachable");
-    lcd.setCursor(3, 1);
-    lcd.print("game state");
-  }
-} emptyState;
-
+IntroState introState;
 StartMenuState startMenuState;
+HighScoreMenuState highScoreMenuState;
+AboutMenuState aboutMenuState;
+SettingsMenuState settingsMenuState;
 StartingState startingState;
 PlayingState playingState;
 GameOverState gameOverState;
 
-State* currentState = &emptyState;
+State* currentState = &introState;
 
 State& getGameState() { return *currentState; }
 
 void setGameState(GameState newState) {
+  // Give the state a final render
+  currentState->render();
+
+  // Cleanup after finishing this state
   currentState->onEnd();
 
   switch (newState) {
-    case GameState::StartMenu:
-      currentState = &startMenuState;
+    case GameState::Intro:
+      currentState = &introState;
+      break;
+
+    case GameState::HighScoreMenu:
+      currentState = &highScoreMenuState;
+      break;
+
+    case GameState::AboutMenu:
+      currentState = &aboutMenuState;
+      break;
+
+    case GameState::SettingsMenu:
+      currentState = &settingsMenuState;
       break;
 
     case GameState::Starting:
@@ -46,7 +59,7 @@ void setGameState(GameState newState) {
       break;
 
     default:
-      currentState = &emptyState;
+      currentState = &startMenuState;
       break;
   }
 

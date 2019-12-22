@@ -19,6 +19,12 @@ void MelodyPlayer::play() {
   nextNoteTime = updateTime;
 }
 
+void MelodyPlayer::stop() {
+  playing = false;
+  currentNote = 0;
+  nextNoteTime = updateTime;
+}
+
 void MelodyPlayer::update() {
   if (!playing) {
     return;

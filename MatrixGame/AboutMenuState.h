@@ -3,6 +3,7 @@
 #include "State.h"
 #include "Time.h"
 
+/// Menu displaying information about the game, the author, and so on.
 class AboutMenuState : public State {
   Time lastScrollTime;
   byte topLineIndex;
@@ -17,7 +18,7 @@ class AboutMenuState : public State {
 
  public:
   void onBegin() override;
+  void onEnd() override;
 
   void update() override;
-  void render() const override;
 };

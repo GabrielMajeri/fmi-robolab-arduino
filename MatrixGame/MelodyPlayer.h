@@ -18,6 +18,7 @@ class MelodyPlayer {
   void setMelody(const Melody& melody);
 
   void play();
+  void stop();
   void update();
 
   bool isPlaying() const;
